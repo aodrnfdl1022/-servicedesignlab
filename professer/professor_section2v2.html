@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Professor | 서비스디자인연구실</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --font-display:"Unbounded",system-ui,sans-serif;--font-body:"IBM Plex Sans KR",system-ui,sans-serif;
+      --a1:#ff4fbf;--a2:#b7ff2a;--a3:#2a5bff;--a4:#00e5ff;
+      --bg:#fbfbff;--panel:rgba(255,255,255,.78);--panel-2:rgba(255,255,255,.62);
+      --ink:#0b0a12;--text:rgba(11,10,18,.88);--muted:rgba(11,10,18,.58);--line:rgba(11,10,18,.10);
+      --shadow-sm:0 10px 24px rgba(10,10,22,.08);--shadow-md:0 18px 55px rgba(10,10,22,.12);--shadow-lg:0 35px 95px rgba(10,10,22,.16);
+      --r-xl:30px;--r-lg:22px;--r-md:16px;--container:1220px;--pad-x:clamp(1.1rem,4vw,3.2rem);
+    }
+    body[data-theme="dark"]{--bg:#070713;--panel:rgba(18,18,30,.70);--panel-2:rgba(18,18,30,.52);--ink:#f4f4ff;--text:rgba(244,244,255,.90);--muted:rgba(244,244,255,.60);--line:rgba(244,244,255,.12);--shadow-sm:0 10px 30px rgba(0,0,0,.35);--shadow-md:0 18px 70px rgba(0,0,0,.45);--shadow-lg:0 40px 110px rgba(0,0,0,.55);}
+    *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);color:var(--text);background:var(--bg);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+    a{color:inherit;}img{display:block;}::selection{background:rgba(255,79,191,.22);}
+    .container{width:min(var(--container),calc(100% - (var(--pad-x)*2)));margin:0 auto;}
+
+    /* NAV */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:1000;
+      padding: 14px var(--pad-x);
+      background: transparent;
+      transition: background .22s ease, border-color .22s ease;
+    }
+    nav.scrolled{
+      background: color-mix(in oklab, var(--panel) 78%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 0)));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+    }
+    .nav-brand{
+      display:flex;
+      align-items:center;
+      gap:.85rem;
+      text-decoration:none;
+      min-width: 240px;
+    }
+    .nav-brand img{ height: 28px; width:auto; }
+    .brand-text{ display:flex; flex-direction:column; line-height:1.1; }
+    .brand-top{
+      font-size:.72rem;
+      color: var(--muted);
+      font-weight:600;
+      letter-spacing:.2px;
+    }
+    .brand-main{
+      font-family: var(--font-display);
+      font-size:.92rem;
+      font-weight:700;
+      letter-spacing:-0.6px;
+      color: var(--ink);
+    }
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap: 1.1rem;
+    }
+    .nav-links{
+      list-style:none;
+      display:flex;
+      gap: 1.4rem;
+      align-items:center;
+    }
+    .nav-links a{
+      text-decoration:none;
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.82rem;
+      letter-spacing:-0.4px;
+      color: color-mix(in oklab, var(--ink) 70%, transparent);
+      position:relative;
+      padding: .35rem 0;
+      transition: color .2s ease;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:-2px;
+      width:0%;
+      height:2px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      transition: width .25s ease;
+    }
+    .nav-links a:hover{ color: var(--ink); }
+    .nav-links a:hover::after{ width:100%; }
+    .nav-links a.active{ color: var(--ink); }
+    .nav-links a.active::after{ width:100%; }
+    .theme-btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding: .55rem .85rem;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.78rem;
+      letter-spacing:-0.35px;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      user-select:none;
+    }
+    .theme-btn:hover{
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: color-mix(in oklab, var(--a1) 28%, var(--line));
+    }
+    .theme-btn svg{ width:18px; height:18px; }
+    @media (max-width: 860px){
+      .nav-links{ display:none; }
+    }
+    .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease;}.reveal.active{opacity:1;transform:translateY(0);}
+
+    .section{padding:clamp(4.6rem,8vw,7.2rem) 0;position:relative;isolation:isolate;}
+    .section--hero{padding-top:112px;padding-bottom:clamp(3.2rem,6vw,5.2rem);background:radial-gradient(1200px 700px at 78% -10%,color-mix(in oklab,var(--a1) 28%,transparent),transparent 60%),radial-gradient(1000px 650px at 10% 20%,color-mix(in oklab,var(--a3) 18%,transparent),transparent 60%),radial-gradient(900px 650px at 88% 75%,color-mix(in oklab,var(--a2) 14%,transparent),transparent 55%);}
+    .section--book{background:linear-gradient(180deg,color-mix(in oklab,var(--panel) 40%,transparent),transparent 60%),radial-gradient(900px 500px at 88% 20%,color-mix(in oklab,var(--a1) 12%,transparent),transparent 60%);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+    .section--patent{background:radial-gradient(1000px 650px at 50% 0%,color-mix(in oklab,var(--a2) 12%,transparent),transparent 60%),radial-gradient(900px 600px at 10% 75%,color-mix(in oklab,var(--a3) 10%,transparent),transparent 60%);border-bottom:1px solid var(--line);}
+    .section--design{background:radial-gradient(900px 500px at 20% 20%,color-mix(in oklab,var(--a1) 10%,transparent),transparent 60%),radial-gradient(800px 500px at 80% 80%,color-mix(in oklab,var(--a4) 10%,transparent),transparent 60%);border-bottom:1px solid var(--line);}
+    .section--research{background:radial-gradient(900px 600px at 85% 10%,color-mix(in oklab,var(--a3) 12%,transparent),transparent 60%),radial-gradient(900px 600px at 15% 85%,color-mix(in oklab,var(--a1) 10%,transparent),transparent 60%);}
+    .section-title{font-family:var(--font-display);font-weight:800;letter-spacing:-1.4px;line-height:1.05;color:var(--ink);font-size:clamp(1.8rem,3.2vw,2.6rem);margin-bottom:1.5rem;}
+
+    /* HERO */
+    .hero-grid{display:grid;grid-template-columns:420px 1fr;gap:clamp(1.5rem,3vw,2.5rem);align-items:stretch;}
+    .prof-photo{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line);}.prof-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+    .prof-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-md);padding:clamp(1.6rem,3vw,2.4rem);position:relative;overflow:hidden;}
+    .prof-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3));}
+    .prof-label{font-family:var(--font-display);font-size:.78rem;font-weight:700;color:var(--a1);letter-spacing:.5px;margin-bottom:.6rem;}
+    .prof-name{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,3.4rem);font-weight:800;letter-spacing:4px;color:var(--ink);margin-bottom:.2rem;}
+    .prof-name-en{font-family:var(--font-display);font-size:1rem;font-weight:700;background:linear-gradient(90deg,var(--a1),var(--a3));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:1.5rem;}
+    .prof-position{font-size:.95rem;color:var(--muted);line-height:1.9;margin-bottom:2rem;}
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+    .info-block-title{font-family:var(--font-display);font-size:.72rem;font-weight:800;color:var(--a1);letter-spacing:1px;text-transform:uppercase;margin-bottom:.6rem;}
+    .info-block p{font-size:.9rem;color:var(--muted);line-height:1.85;}
+    .contact-info a{color:var(--a1);text-decoration:none;}.contact-info a:hover{color:var(--a3);}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr;}.prof-photo{max-height:400px;}.info-grid{grid-template-columns:1fr;}}
+
+    /* YEAR BADGE - opacity는 JS에서 inline style로 */
+    .year-badge{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:.22rem .5rem;background:linear-gradient(135deg,var(--a1),var(--a3));color:#fff;font-family:var(--font-display);font-size:.65rem;font-weight:700;border-radius:999px;flex-shrink:0;}
+    .year-badge.alt{background:linear-gradient(135deg,var(--a3),var(--a4));}
+    .content-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-md);padding:clamp(1.4rem,2.8vw,2rem);}
+
+    /* ===== BOOK / RESEARCH: 년도 왼쪽 + 내용 오른쪽 가로 배치 ===== */
+    .year-row{display:flex;align-items:flex-start;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--line);}
+    .year-row:last-child{border-bottom:none;}
+    .year-row .year-badge{margin-top:.15rem;}
+    .year-row-content{flex:1;min-width:0;}
+    .year-row-content li{list-style:none;padding:.2rem 0;font-size:.85rem;color:var(--muted);line-height:1.6;}
+    .year-row-content li + li{border-top:1px dashed color-mix(in oklab,var(--ink) 6%,transparent);}
+
+    .book-grid{display:grid;grid-template-columns:1fr 400px;gap:clamp(1.2rem,2.5vw,2rem);align-items:stretch;}
+    .book-grid .content-card{display:flex;flex-direction:column;}
+    .book-scroll{flex:1;overflow-y:auto;max-height:520px;}
+    .book-scroll::-webkit-scrollbar{width:4px;}.book-scroll::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--a1) 30%,transparent);border-radius:2px;}
+
+    .slider-wrap{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line);position:relative;background:var(--panel);display:flex;flex-direction:column;}
+    .slider-track{position:relative;flex:1;min-height:300px;}
+    .slider-track img{width:100%;height:100%;object-fit:contain;object-position:center;position:absolute;top:0;left:0;opacity:0;transition:opacity .5s ease;}.slider-track img.active{opacity:1;}
+    .slider-btn{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;background:var(--panel);border:1px solid var(--line);border-radius:999px;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:all .2s ease;z-index:10;}
+    .slider-btn:hover{transform:translateY(-50%) scale(1.08);box-shadow:var(--shadow-md);}.slider-btn svg{width:18px;height:18px;stroke:var(--ink);}.slider-btn.prev{left:14px;}.slider-btn.next{right:14px;}
+    .slider-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;}
+    .slider-dot{width:8px;height:8px;border-radius:999px;background:color-mix(in oklab,var(--ink) 30%,transparent);border:none;cursor:pointer;transition:all .2s ease;}.slider-dot.active{background:var(--a1);transform:scale(1.4);}
+    @media(max-width:900px){.book-grid{grid-template-columns:1fr;}.slider-track{min-height:350px;}.book-grid .slider-wrap{order:-1;}}
+
+    /* ===== PATENT / DESIGN: 꽉 차게 ===== */
+    .patent-layout{display:flex;flex-direction:column;gap:2rem;}
+    .patent-images-row{display:flex;gap:.8rem;align-items:flex-end;justify-content:center;}
+    .patent-images-row img{height:270px;width:auto;border-radius:var(--r-lg);box-shadow:var(--shadow-md);border:1px solid var(--line);object-fit:contain;}
+    @media(max-width:768px){.patent-images-row{flex-wrap:wrap;}.patent-images-row img{height:180px;}}
+
+    .year-group{margin-bottom:.9rem;}.year-group:last-child{margin-bottom:0;}
+    .year-group-header{margin-bottom:.3rem;}
+    .year-group-items{list-style:none;}
+    .year-group-items li{padding:.45rem .7rem;margin-bottom:3px;font-size:.85rem;color:var(--muted);line-height:1.6;background:color-mix(in oklab,var(--ink) 4%,transparent);border-radius:10px;}
+    body[data-theme="dark"] .year-group-items li{background:color-mix(in oklab,var(--ink) 6%,transparent);}
+    .year-group-items li:last-child{margin-bottom:0;}
+
+    .year-row-content.compact li{padding:.12rem 0;font-size:.82rem;line-height:1.45;}
+    .year-row-content.compact li + li{border-top:1px dashed color-mix(in oklab,var(--ink) 4%,transparent);}
+
+    /* RESEARCH */
+    .research-grid{display:grid;grid-template-columns:1fr 280px;gap:clamp(1.5rem,3vw,2.5rem);align-items:start;}
+    .research-grid .content-card{display:flex;flex-direction:column;}
+    .research-scroll{flex:1;overflow-y:auto;max-height:650px;}
+    .research-scroll::-webkit-scrollbar{width:4px;}.research-scroll::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--a1) 30%,transparent);border-radius:2px;}
+    .research-img-card{position:sticky;top:100px;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line);background:var(--panel);}
+    .research-img-card img{width:100%;display:block;}
+    .research-caption{padding:.8rem 1rem;border-top:1px solid var(--line);}
+    .research-caption p{font-size:.72rem;color:var(--muted);line-height:1.5;word-break:keep-all;overflow-wrap:break-word;padding-left:1.2em;text-indent:-1.2em;}
+    .research-caption p::before{content:"* ";color:var(--a3);font-weight:700;}
+    @media(max-width:900px){.research-grid{grid-template-columns:1fr;}.research-img-card{position:static;max-width:280px;order:-1;}}
+
+    footer{padding:1.8rem var(--pad-x);border-top:1px solid var(--line);background:color-mix(in oklab,var(--panel) 70%,transparent);backdrop-filter:blur(14px);}
+    .footer-inner{width:min(var(--container),calc(100% - (var(--pad-x)*2)));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+    .footer-brand{display:flex;align-items:center;gap:.75rem;}.footer-brand img{height:22px;width:auto;}
+    .footer-brand span{font-family:var(--font-display);font-weight:700;font-size:.92rem;letter-spacing:-0.6px;color:var(--ink);}
+    footer p{color:var(--muted);font-size:.82rem;font-weight:500;}
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html">
+        <img src="../homeImg/01_kumoh_university_logo.png" alt="금오공과대학교">
+        <div class="brand-text">
+          <span class="brand-top">Kumoh National Institute of Technology</span>
+          <span class="brand-main">Service Design Lab</span>
+        </div>
+      </a>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="professor.html" class="active">Professor</a></li>
+          <li><a href="members.html">Members</a></li>
+          <li><a href="project.html">Project</a></li>
+          <li><a href="index.html#related">Related</a></li>
+        </ul>
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9z"/>
+          </svg>
+          Theme
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section section--hero"><div class="container hero-grid">
+    <div class="prof-photo reveal"><img src="../professer/professor.png" alt="김선아 교수"></div>
+    <div class="prof-card reveal">
+      <p class="prof-label">Professor</p><h1 class="prof-name">김 선 아</h1><p class="prof-name-en">Sun Ah Kim</p>
+      <p class="prof-position">국립금오공과대학교 산업·빅데이터공학부 산업공학전공 교수<br>K-DESIGN AWARD, ASIA DESIGN AWARD 심사위원<br>서비스 디자인 컨설턴트</p>
+      <div class="info-grid">
+        <div class="info-block"><p class="info-block-title">Education</p><p>홍익대학교 국제디자인전문대학원, 디자인학 박사<br>Brunel University, MA (Design Innovation)<br>이화여자대학교, 생활미술과 산업디자인 학사</p></div>
+        <div class="info-block contact-info"><p class="info-block-title">Contact</p><p><a href="mailto:sun@kumoh.ac.kr">sun@kumoh.ac.kr</a></p><p>054-478-7662</p></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- BOOK: 년도 왼쪽 | 내용 오른쪽 -->
+  <section class="section section--book"><div class="container book-grid">
+    <div class="content-card reveal"><h2 class="section-title">Book</h2><div class="book-scroll">
+      <div class="year-row" data-year="2022"><span class="year-badge">2022</span><ul class="year-row-content"><li>"CMF디자인", 금오공과대학교</li><li>"서비스 경험 디자인 이론서", 한국디자인진흥원</li></ul></div>
+      <div class="year-row" data-year="2021"><span class="year-badge">2021</span><ul class="year-row-content"><li>"디자인 씽킹 활용", 금오공과대학교*</li></ul></div>
+      <div class="year-row" data-year="2020"><span class="year-badge">2020</span><ul class="year-row-content"><li>"서비스 디자인. 노트", 컬쳐코드</li></ul></div>
+      <div class="year-row" data-year="2017"><span class="year-badge">2017</span><ul class="year-row-content"><li>"4차산업혁명해석지도", 금오공대</li></ul></div>
+      <div class="year-row" data-year="2014"><span class="year-badge">2014</span><ul class="year-row-content"><li>"농사와 디자인", 컬처코드</li></ul></div>
+      <div class="year-row" data-year="2013"><span class="year-badge">2013</span><ul class="year-row-content"><li>"디자인 사고", 컬쳐코드</li></ul></div>
+      <div class="year-row" data-year="2012"><span class="year-badge">2012</span><ul class="year-row-content"><li>"디자이너 세계", 인퍼블릭</li><li>"IMPERFECT BEAUTY", 대구경북디자인센터</li></ul></div>
+      <div class="year-row" data-year="2011"><span class="year-badge">2011</span><ul class="year-row-content"><li>"디자인 일상", 인퍼블릭</li><li>"CMF; 색, 소재 그리고 마감", 비쥬얼스토리공장</li></ul></div>
+      <div class="year-row" data-year="2010"><span class="year-badge">2010</span><ul class="year-row-content"><li>"지속가능 디자인", 대구경북디자인센터</li></ul></div>
+      <div class="year-row" data-year="2009"><span class="year-badge">2009</span><ul class="year-row-content"><li>"디자이너의 디자인경영", VSG Book</li></ul></div>
+      <div class="year-row" data-year="2006"><span class="year-badge">2006</span><ul class="year-row-content"><li>"산업디자인 실무노하우", 안그라픽스</li></ul></div>
+    </div></div>
+    <div class="slider-wrap reveal"><div class="slider-track" id="bookSlider"><img src="../professer/book_1.png" alt="저서 1" class="active"><img src="../professer/book_2.png" alt="저서 2"><img src="../professer/book_3.png" alt="저서 3"></div>
+      <button class="slider-btn prev" onclick="moveSlide(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="slider-btn next" onclick="moveSlide(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      <div class="slider-dots" id="bookDots"><button class="slider-dot active" onclick="goToSlide(0)"></button><button class="slider-dot" onclick="goToSlide(1)"></button><button class="slider-dot" onclick="goToSlide(2)"></button></div>
+    </div>
+  </div></section>
+
+  <!-- PATENT -->
+  <section class="section section--patent"><div class="container patent-layout">
+    <div class="patent-images-row reveal"><img src="../professer/patent_1.png" alt="특허 1"><img src="../professer/patent_3.png" alt="특허 3"><img src="../professer/patent_2.png" alt="특허 2"></div>
+    <div class="content-card reveal"><h2 class="section-title">Patent</h2>
+      <div class="year-row" data-year="2024"><span class="year-badge alt">2024</span><ul class="year-row-content"><li>복합기능성 안대특허 (제10-2739450호)</li></ul></div>
+      <div class="year-row" data-year="2017"><span class="year-badge alt">2017</span><ul class="year-row-content"><li>의자 (10-2015-0154707)</li><li>스마트폰 케이스 (10-2015-0154739)</li><li>디스펜서 (10-2015-0154741)</li><li>휴대용 정수기 (10-2015-0154742)</li><li>액세서리 (10-2015-0154740)</li><li>커버가 구비된 콘센트 (10-2015-0185365)</li><li>슬리퍼 겸용 깔창 (10-2015-0185365)</li><li>연필꽂이 (10-2016-0027714)</li><li>안전 발 밴드 (10-2016-0027571)</li></ul></div>
+      <div class="year-row" data-year="2015"><span class="year-badge alt">2015</span><ul class="year-row-content"><li>의자 겸용 책상 (10-2014-0048041)</li></ul></div>
+      <div class="year-row" data-year="2013"><span class="year-badge alt">2013</span><ul class="year-row-content"><li>개인용 의복 미기후 냉난방 장치 및 이를 부착한 의복 (10-2012-0061008)</li></ul></div>
+    </div>
+  </div></section>
+
+  <!-- DESIGN RIGHT -->
+  <section class="section section--design"><div class="container"><div class="content-card reveal"><h2 class="section-title">Design Right</h2>
+    <div class="year-row" data-year="2018"><span class="year-badge alt">2018</span><ul class="year-row-content"><li>보행보조기 (30-2018-0009740)</li><li>취침보조등이 내장된 가습기 (30-2017-0022786)</li><li>휴대용 조명등 (30-2017-0022811)</li><li>공구가 부착된 진공청소기 (30-2017-0022804)</li></ul></div>
+    <div class="year-row" data-year="2017"><span class="year-badge alt">2017</span><ul class="year-row-content"><li>핸즈프리 블루투스 스피커 (30-2017-0022790)</li><li>유희용 의류 완구 (30-2016-0013251)</li></ul></div>
+    <div class="year-row" data-year="2016"><span class="year-badge alt">2016</span><ul class="year-row-content compact" style="columns:2;column-gap:1.5rem;column-rule:1px solid var(--line);"><li>녹음기가 부설된 인형완구 (30-2016-0015638)</li><li>녹음기가 부설된 인형완구 (30-2016-0015639)</li><li>음식용 포크 (30-2016-0015586)</li><li>음식용 포크 (30-2016-0015587)</li><li>음식용 포크 (30-2016-0015531)</li><li>음식용 포크 (30-2016-0015532)</li><li>미끄럼방지용 밴드 (30-2016-0013176)</li><li>의자 (30-2016-0013177)</li><li>젖병 (30-2016-0013250)</li><li>휴대용 홀로그램 투영기 (30-2016-0013199)</li><li>슬리퍼가 부설된 깔창 (30-2016-0005107)</li><li>콘센트용 커버 (30-2016-0005104)</li><li>식도용 손잡이 (30-2016-0004983)</li><li>봉지 밀폐용 클립 (30-2016-0004985)</li><li>마우스패드 (30-2016-0004986)</li><li>정전기 방지구 (30-2016-0004945)</li><li>우산용 캡 (30-2016-0004943)</li><li>디스플레이 장치 (30-2015-0063339)</li><li>화학 결합된 세라믹 제품을 제조하는 방법 및 제품 (30-2015-0063340)</li><li>반도체 장치 및 그 제조 방법 (30-2015-0063344)</li><li>텀블러용 뚜껑 (30-2015-0063360)</li><li>라면조리용기 (30-2015-0063361)</li><li>스파우트 마개 (30-2015-0065869)</li><li>직물지 (30-2015-0065768)</li><li>식수용 여과기 (30-2015-0065872)</li></ul></div>
+    <div class="year-row" data-year="2015"><span class="year-badge alt">2015</span><ul class="year-row-content"><li>무선 인터넷 서비스 품질 측정 시스템 및 그 방법 (30-2015-0041541)</li><li>콘택트렌즈 케이스용 커버지 (30-2014-0044909)</li><li>콘택트렌즈 케이스 (30-2014-0044906)</li><li>콘택트렌즈 케이스 (30-2014-0044907)</li><li>콘택트렌즈 케이스 (30-2014-0044908)</li></ul></div>
+    <div class="year-row" data-year="2014"><span class="year-badge alt">2014</span><ul class="year-row-content"><li>파 (30-2014-0010893)</li></ul></div>
+  </div></div></section>
+
+  <!-- RESEARCH: 년도 왼쪽 | 내용 오른쪽 -->
+  <section class="section section--research"><div class="container research-grid">
+    <div class="content-card reveal"><h2 class="section-title">Research</h2><div class="research-scroll">
+      <div class="year-row" data-year="2025.09"><span class="year-badge">25.09</span><ul class="year-row-content"><li>메타버스 기획 프레임워크 (창업융합컨설팅연구)</li></ul></div>
+      <div class="year-row" data-year="2025.08"><span class="year-badge">25.08</span><ul class="year-row-content"><li>국내 혼합현실 연구 동향 분석 : 2015년∼2024년 국내 논문을 중심 (컨설팅융합연구)</li></ul></div>
+      <div class="year-row" data-year="2025.07"><span class="year-badge">25.07</span><ul class="year-row-content"><li>인구 소멸 위험 단계별 도시 청년정책 사례조사를 통한 구미시의 청년정책 방향 연구 (컨설팅융합연구)</li></ul></div>
+      <div class="year-row" data-year="2024.09"><span class="year-badge">24.09</span><ul class="year-row-content"><li>구미시 시민참여 공공서비스디자인 워크숍 사례와 의의 연구 (디자인리서치학회)</li><li>친환경 화장품 브랜드의 경험디자인 구성요소 사례 연구 (디자인리서치학회)</li></ul></div>
+      <div class="year-row" data-year="2024.08"><span class="year-badge">24.08</span><ul class="year-row-content"><li>Derivation of usability evaluation factors for metaverse content through literature review (IEA2024)</li></ul></div>
+      <div class="year-row" data-year="2024.03"><span class="year-badge">24.03</span><ul class="year-row-content"><li>서비스디자인 프레임워크를 활용한 제품 서비스 융합 공동창의 연구 어린이 안전 XR 디자인 워크숍을 중심으로 (컨설팅융합연구)</li></ul></div>
+      <div class="year-row" data-year="2023"><span class="year-badge">2023</span><ul class="year-row-content"><li>제조 혁신을 위한 고객 맞춤형 CMF 디자인 프로세스 (기초조형학연구)</li></ul></div>
+      <div class="year-row" data-year="2022"><span class="year-badge">2022</span><ul class="year-row-content"><li>디자이너 대상 디자인 역량강화교육과 개인성과와의 관계에서 학습 자기효능감과 기업 학습 전이풍토의 매개효과 (디지털융복합연구)</li><li>공공서비스 역량 강화를 위한 공공서비스디자인 교육 프로그램 설계 정책공급자 대상 워크숍 사례를 중심으로 (디지털융복합연구)</li><li>Open Innovation Dynamics of Furniture Design and Function The Difference between IKEA and Nitori (Science Technology &amp; Society)</li></ul></div>
+      <div class="year-row" data-year="2021"><span class="year-badge">2021</span><ul class="year-row-content"><li>상황적 리더십 스타일에 따른 긍정적 정서 클러스터 수준 차이와 클러스터 형성에 대한 연구 (Counseling Psychology Education Welfare)</li><li>중소기업 종사자들이 지각하는 여가자유 정도가 긍정 부정정서 강도와 여가 장애에 미치는 영향 (Counseling Psychology Education Welfare)</li><li>디자인 속성지표 도출을 통한 선거 결과 인포그래픽 디자인 방향 (디지털융복합연구)</li></ul></div>
+      <div class="year-row" data-year="2020"><span class="year-badge">2020</span><ul class="year-row-content"><li>창조혁신형 디자인인력양성을 위한 산학협력 교육사례 연구 (디지털융복합연구)</li><li>사회적 가치 창출을 위한 PBL Project Based Learning 교육설계 (KBR)</li><li>디자인 씽킹을 활용한 인클루시브 디자인 콘셉트 개발 (기초조형학연구)</li></ul></div>
+      <div class="year-row" data-year="2019"><span class="year-badge">2019</span><ul class="year-row-content"><li>국민 참여를 통한 공공서비스디자인에 관한 연구 (디지털융복합연구)</li><li>감성 일치도 평가를 통한 화장품 용기 CMF 디자인 프로세스 검증 및 개선 (기초조형학연구)</li><li>The effect of personal value on CSV creating shared value (Journal of Open Innovation Technology Market and Complexity)</li><li>사례연구를 통한 정부지원중심 스타트업 멘토링서비스 제안 (디지털융복합연구)</li></ul></div>
+      <div class="year-row" data-year="2018"><span class="year-badge">2018</span><ul class="year-row-content"><li>감성 소재 부품 개발을 위한 감성공학적 품질평가 프레임 워크 및 활용 (Journal of Integrated Design Research)</li><li>정부 정보의 활용을 위한 서비스디자인 (디지털융복합연구)</li><li>관리회계와 디자인을 적용한 융합 교수학습 설계 (회계저널)</li><li>Participatory Public Service Design by Gov 3.0 Design Group (Sustainability)</li></ul></div>
+      <div class="year-row" data-year="2017"><span class="year-badge">2017</span><ul class="year-row-content"><li>촉감을 고려한 감성소재 디자인 개발 (기초조형학연구)</li><li>Student customized creative education model based on open innovation (Journal of Open Innovation Technology Market and Complexity)</li></ul></div>
+      <div class="year-row" data-year="2016"><span class="year-badge">2016</span><ul class="year-row-content"><li>A Human Sensibility Ergonomic Design for Developing Aesthetically and Emotionally Affecting Glass Panel of Changing Colors (Journal of the Ergonomics Society of Korea)</li></ul></div>
+      <div class="year-row" data-year="2015"><span class="year-badge">2015</span><ul class="year-row-content"><li>디자인 사고를 통한 적정 기술의 가치 향상에 관한 연구 (기초조형학연구)</li></ul></div>
+      <div class="year-row" data-year="2014"><span class="year-badge">2014</span><ul class="year-row-content"><li>CMF중심 디자인 프로세스에 관한 연구 (디자인지식저널)</li><li>감각적 경험요구 증대에 따른 감성소재 개발 방향 (디자인학연구)</li><li>업사이클링 디자인을 통한 비즈니스 창출에 관한 연구 (기초조형학연구)</li></ul></div>
+      <div class="year-row" data-year="2013"><span class="year-badge">2013</span><ul class="year-row-content"><li>CMF디자인을 통한 제품 혁신 (기초조형학연구)</li><li>사회공헌 활동이 브랜드 충성도에 미치는 영향에 관한 연구 (디지털정책연구)</li><li>SCM과 기업가치와의 관계에 관한 연구 (디지털정책연구)</li><li>에너지 절약을 고려한 디자인 (적정기술)</li></ul></div>
+      <div class="year-row" data-year="2012"><span class="year-badge">2012</span><ul class="year-row-content"><li>한국중소기업을 위한 컨설팅서비스의 사후관리 효과에 관한 연구 (디지털정책연구)</li></ul></div>
+    </div></div>
+    <div class="research-img-card reveal"><img src="../professer/research_1.png" alt="연구 이미지"><div class="research-caption"><p>제조 혁신을 위한 고객 맞춤형 CMF 디자인 프로세스</p></div></div>
+  </div></section>
+
+  <footer><div class="footer-inner"><div class="footer-brand"><img src="../homeImg/01_kumoh_university_logo.png" alt="금오공과대학교"><span>Service Design Lab</span></div><p>&copy; 2026 국립금오공과대학교 서비스디자인연구실. All rights reserved.</p></div></footer>
+
+  <script>
+    const nav=document.getElementById('nav');window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>12);});window.addEventListener('load',()=>{nav.classList.toggle('scrolled',window.scrollY>12);});
+    const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active');});},{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    const themeBtn=document.getElementById('themeBtn'),themeIcon=document.getElementById('themeIcon');
+    const applyTheme=t=>{document.body.setAttribute('data-theme',t);themeIcon.innerHTML=t==='dark'?'<circle cx="12" cy="12" r="5"></circle><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"></path>':'<path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9z"></path>';};
+    const saved=localStorage.getItem('theme'),prefersDark=window.matchMedia?.('(prefers-color-scheme:dark)').matches;applyTheme(saved||(prefersDark?'dark':'light'));
+    themeBtn.addEventListener('click',()=>{const n=(document.body.getAttribute('data-theme')||'light')==='dark'?'light':'dark';localStorage.setItem('theme',n);applyTheme(n);});
+    let cur=0;const slides=document.querySelectorAll('#bookSlider img'),dots=document.querySelectorAll('#bookDots .slider-dot'),tot=slides.length;
+    function updateSlider(){slides.forEach((s,i)=>s.classList.toggle('active',i===cur));dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}
+    function moveSlide(d){cur=(cur+d+tot)%tot;updateSlider();}function goToSlide(i){cur=i;updateSlider();}
+
+    // 년도별 배지 opacity - 최신이 진하고, 옛날일수록 연하게
+    function applyYearFade(){
+      const allBadges=document.querySelectorAll('[data-year] .year-badge');
+      const years=[...new Set([...document.querySelectorAll('[data-year]')].map(el=>{
+        const v=el.dataset.year; return parseFloat(v)||0;
+      }))].sort((a,b)=>b-a);
+      const maxY=years[0],minY=years[years.length-1],range=maxY-minY||1;
+      document.querySelectorAll('[data-year]').forEach(el=>{
+        const y=parseFloat(el.dataset.year)||0;
+        const ratio=(y-minY)/range;
+        const opacity=0.45+ratio*0.55;
+        el.querySelector('.year-badge').style.opacity=opacity;
+      });
+    }
+    applyYearFade();
+  </script>
+</body>
+</html>

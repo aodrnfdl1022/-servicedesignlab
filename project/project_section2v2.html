@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project | 서비스디자인연구실</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --font-display: "Unbounded", system-ui, sans-serif;
+      --font-body: "IBM Plex Sans KR", system-ui, sans-serif;
+
+      --a1: #ff4fbf;
+      --a2: #b7ff2a;
+      --a3: #2a5bff;
+      --a4: #00e5ff;
+
+      --bg: #fbfbff;
+      --panel: rgba(255,255,255,.78);
+      --panel-2: rgba(255,255,255,.62);
+      --ink: #0b0a12;
+      --text: rgba(11,10,18,.88);
+      --muted: rgba(11,10,18,.58);
+      --line: rgba(11,10,18,.10);
+      --shadow-sm: 0 10px 24px rgba(10,10,22,.08);
+      --shadow-md: 0 18px 55px rgba(10,10,22,.12);
+      --shadow-lg: 0 35px 95px rgba(10,10,22,.16);
+
+      --r-xl: 30px;
+      --r-lg: 22px;
+      --r-md: 16px;
+
+      --container: 1220px;
+      --pad-x: clamp(1.1rem, 4vw, 3.2rem);
+    }
+
+    body[data-theme="dark"]{
+      --bg: #070713;
+      --panel: rgba(18,18,30,.70);
+      --panel-2: rgba(18,18,30,.52);
+      --ink: #f4f4ff;
+      --text: rgba(244,244,255,.90);
+      --muted: rgba(244,244,255,.60);
+      --line: rgba(244,244,255,.12);
+      --shadow-sm: 0 10px 30px rgba(0,0,0,.35);
+      --shadow-md: 0 18px 70px rgba(0,0,0,.45);
+      --shadow-lg: 0 40px 110px rgba(0,0,0,.55);
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a{ color:inherit; }
+    img{ display:block; }
+    ::selection{ background: rgba(255,79,191,.22); }
+
+    .container{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 2)));
+      margin:0 auto;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:1000;
+      padding: 14px var(--pad-x);
+      background: transparent;
+      transition: background .22s ease, border-color .22s ease;
+    }
+    nav.scrolled{
+      background: color-mix(in oklab, var(--panel) 78%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 0)));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+    }
+    .nav-brand{
+      display:flex;
+      align-items:center;
+      gap:.85rem;
+      text-decoration:none;
+      min-width: 240px;
+    }
+    .nav-brand img{ height: 28px; width:auto; }
+    .brand-text{ display:flex; flex-direction:column; line-height:1.1; }
+    .brand-top{
+      font-size:.72rem;
+      color: var(--muted);
+      font-weight:600;
+      letter-spacing:.2px;
+    }
+    .brand-main{
+      font-family: var(--font-display);
+      font-size:.92rem;
+      font-weight:700;
+      letter-spacing:-0.6px;
+      color: var(--ink);
+    }
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap: 1.1rem;
+    }
+    .nav-links{
+      list-style:none;
+      display:flex;
+      gap: 1.4rem;
+      align-items:center;
+    }
+    .nav-links a{
+      text-decoration:none;
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.82rem;
+      letter-spacing:-0.4px;
+      color: color-mix(in oklab, var(--ink) 70%, transparent);
+      position:relative;
+      padding: .35rem 0;
+      transition: color .2s ease;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:-2px;
+      width:0%;
+      height:2px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      transition: width .25s ease;
+    }
+    .nav-links a:hover{ color: var(--ink); }
+    .nav-links a:hover::after{ width:100%; }
+    .nav-links a.active{ color: var(--ink); }
+    .nav-links a.active::after{ width:100%; }
+    .theme-btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding: .55rem .85rem;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.78rem;
+      letter-spacing:-0.35px;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      user-select:none;
+    }
+    .theme-btn:hover{
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: color-mix(in oklab, var(--a1) 28%, var(--line));
+    }
+    .theme-btn svg{ width:18px; height:18px; }
+    @media (max-width: 860px){
+      .nav-links{ display:none; }
+    }
+
+    /* SECTION */
+    .section{
+      padding: clamp(4.6rem, 8vw, 7.2rem) 0;
+      position:relative;
+      isolation:isolate;
+    }
+    .section--hero{
+      padding-top: 112px;
+      padding-bottom: clamp(2rem, 4vw, 3rem);
+      background:
+        radial-gradient(1200px 700px at 78% -10%, color-mix(in oklab, var(--a1) 28%, transparent), transparent 60%),
+        radial-gradient(1000px 650px at 10% 20%, color-mix(in oklab, var(--a3) 18%, transparent), transparent 60%),
+        radial-gradient(900px 650px at 88% 75%, color-mix(in oklab, var(--a2) 14%, transparent), transparent 55%);
+    }
+    .section--gallery{
+      padding-top: 2rem;
+      background:
+        linear-gradient(180deg, color-mix(in oklab, var(--panel) 40%, transparent), transparent 60%),
+        radial-gradient(900px 500px at 12% 20%, color-mix(in oklab, var(--a4) 10%, transparent), transparent 60%);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .section--list{
+      padding-top: clamp(2.5rem, 5vw, 4rem);
+      padding-bottom: clamp(2.5rem, 5vw, 4rem);
+      background:
+        radial-gradient(1000px 650px at 90% 20%, color-mix(in oklab, var(--a3) 14%, transparent), transparent 60%),
+        radial-gradient(900px 600px at 10% 75%, color-mix(in oklab, var(--a1) 12%, transparent), transparent 60%);
+    }
+
+    /* TITLE BAR */
+    .titlebar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+      margin-bottom: clamp(1.6rem, 3.2vw, 2.8rem);
+    }
+    .bar-left{
+      display:flex;
+      flex-direction:column;
+      gap: .5rem;
+    }
+    .bar-label{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      font-family: var(--font-display);
+      font-weight:800;
+      font-size:.78rem;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .bar-label::before{
+      content:"";
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: conic-gradient(from 220deg, var(--a1), var(--a2), var(--a3), var(--a1));
+      box-shadow: 0 0 0 5px color-mix(in oklab, var(--a1) 12%, transparent);
+    }
+    .bar-title{
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: -1.4px;
+      line-height: 1.05;
+      color: var(--ink);
+      font-size: clamp(2rem, 3.8vw, 3rem);
+    }
+    .bar-title .kr{
+      display:inline-block;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* PAGE HEADER */
+    .page-header{
+      text-align: center;
+      margin-top: 1.2rem;
+      margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    }
+    .page-title{
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      color: var(--ink);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+    }
+    .page-title .grad{
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+    }
+
+    /* HERO SLIDER */
+    .hero-slider{
+      position:relative;
+      border-radius: var(--r-xl);
+      overflow:hidden;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-lg);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .slider-container{
+      position:relative;
+      overflow:hidden;
+    }
+    .slider-track{
+      display:flex;
+      transition: transform .5s ease;
+    }
+    .slider-track img{
+      width:100%;
+      min-width:100%;
+      height: 420px;
+      object-fit:cover;
+      filter: saturate(1.12) contrast(1.05);
+    }
+    .slider-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:50px;
+      height:50px;
+      background: var(--panel);
+      border:1px solid var(--line);
+      border-radius:50%;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: var(--shadow-md);
+      transition: all .3s ease;
+      z-index:10;
+    }
+    .slider-btn:hover{
+      background: linear-gradient(135deg, var(--a1), var(--a3));
+    }
+    .slider-btn:hover svg{ stroke: white; }
+    .slider-btn svg{
+      width:20px;
+      height:20px;
+      stroke: var(--ink);
+      transition: stroke .3s;
+    }
+    .slider-btn.prev{ left:20px; }
+    .slider-btn.next{ right:20px; }
+    .slider-dots{
+      position:absolute;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:10px;
+      z-index:10;
+    }
+    .slider-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background: rgba(255,255,255,.5);
+      border:none;
+      cursor:pointer;
+      transition: all .3s ease;
+    }
+    .slider-dot.active{
+      background: white;
+      transform: scale(1.3);
+      box-shadow: 0 0 12px rgba(255,255,255,.6);
+    }
+    @media (max-width: 768px){
+      .slider-track img{ height: 280px; }
+      .slider-btn{ width:40px; height:40px; }
+      .slider-btn.prev{ left:10px; }
+      .slider-btn.next{ right:10px; }
+    }
+
+    /* PROJECT GALLERY */
+    .project-grid{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .project-card{
+      border-radius: var(--r-xl);
+      overflow:hidden;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-md);
+      cursor:pointer;
+      position:relative;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .project-card::before{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0;
+      height:4px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity:0;
+      transition: opacity .3s;
+    }
+    .project-card:hover{
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: color-mix(in oklab, var(--a1) 28%, var(--line));
+    }
+    .project-card:hover::before{ opacity:1; }
+    .project-img{
+      width:100%;
+      height:220px;
+      overflow:hidden;
+      position:relative;
+      border-bottom: 1px solid var(--line);
+    }
+    .project-img img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter: saturate(1.12) contrast(1.05);
+      transition: transform .5s ease;
+    }
+    .project-card:hover .project-img img{
+      transform: scale(1.08);
+    }
+    .project-title{
+      padding: 0 1.2rem;
+      margin: 0;
+      text-align:center;
+      font-family: var(--font-display);
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.4px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 3.8rem;
+    }
+    @media (max-width: 768px){
+      .project-grid{
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+    }
+
+    /* PROJECT LIST */
+    .project-list-container{
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .project-list{
+      list-style:none;
+    }
+    .project-list li{
+      display:flex;
+      align-items:center;
+      gap: 1.2rem;
+      padding: .85rem .6rem;
+      border-bottom: 1px solid var(--line);
+      transition: all .3s ease;
+      border-radius: 8px;
+    }
+    .project-list li:hover{
+      background: color-mix(in oklab, var(--a1) 8%, transparent);
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .project-list li:last-child{
+      border-bottom:none;
+    }
+    .project-date{
+      display:flex;
+      align-items:center;
+      gap:.4rem;
+      flex-shrink:0;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--a2) 32%, transparent), color-mix(in oklab, var(--a1) 18%, transparent));
+      border-radius: 999px;
+      padding: .3rem .7rem .3rem .5rem;
+      white-space:nowrap;
+      order:-1;
+    }
+    .project-date svg{
+      width:13px;
+      height:13px;
+      stroke: var(--a1);
+      fill:none;
+      flex-shrink:0;
+    }
+    .project-date span{
+      font-family: var(--font-display);
+      font-size: .72rem;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.3px;
+    }
+    .project-list-title{
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      font-weight: 500;
+      flex:1;
+      text-align:left;
+    }
+    .project-list li:hover .project-list-title{
+      color: var(--ink);
+    }
+    @media (max-width: 768px){
+      .project-list li{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:.5rem;
+      }
+    }
+
+    /* DETAIL MODAL */
+    .detail-modal{
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index:1000;
+      align-items:center;
+      justify-content:center;
+    }
+    .detail-modal.active{ display:flex; }
+    .detail-modal-content{
+      position:relative;
+      width:90%;
+      max-width:900px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    .detail-image-container{
+      width:100%;
+      height:70vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .detail-modal-content img{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg);
+    }
+    .detail-close{
+      position:absolute;
+      top:-50px;
+      right:0;
+      width:44px;
+      height:44px;
+      background: var(--panel);
+      border:1px solid var(--line);
+      border-radius:50%;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      color: var(--ink);
+      transition: all .3s;
+    }
+    .detail-close:hover{
+      background: linear-gradient(135deg, var(--a1), var(--a3));
+      color: white;
+    }
+    .detail-nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:50px;
+      height:50px;
+      background: var(--panel);
+      border:1px solid var(--line);
+      border-radius:50%;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: var(--shadow-md);
+      transition: all .3s ease;
+      z-index:10;
+    }
+    .detail-nav:hover{
+      background: linear-gradient(135deg, var(--a1), var(--a3));
+    }
+    .detail-nav:hover svg{ stroke: white; }
+    .detail-nav svg{
+      width:20px;
+      height:20px;
+      stroke: var(--ink);
+      transition: stroke .3s;
+    }
+    .detail-nav.prev{ left:-70px; }
+    .detail-nav.next{ right:-70px; }
+    .detail-info{
+      margin-top:20px;
+      text-align:center;
+    }
+    .detail-counter{
+      color: rgba(255,255,255,.7);
+      font-family: var(--font-display);
+      font-size: .9rem;
+      font-weight: 600;
+      margin-bottom:8px;
+    }
+    .detail-title{
+      color: white;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+    @media (max-width: 1100px){
+      .detail-nav.prev{ left:10px; }
+      .detail-nav.next{ right:10px; }
+    }
+    @media (max-width: 768px){
+      .detail-image-container{ height:50vh; }
+      .detail-nav{ width:40px; height:40px; }
+      .detail-close{ top:-45px; }
+    }
+
+    /* REVEAL */
+    .reveal{
+      opacity:0;
+      transform: translateY(16px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.active{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* FOOTER */
+    footer{
+      padding: 1.8rem var(--pad-x);
+      border-top: 1px solid var(--line);
+      background: color-mix(in oklab, var(--panel) 70%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .footer-inner{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 2)));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+      flex-wrap:wrap;
+    }
+    .footer-brand{
+      display:flex;
+      align-items:center;
+      gap:.75rem;
+    }
+    .footer-brand img{ height: 22px; width:auto; }
+    .footer-brand span{
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.92rem;
+      letter-spacing:-0.6px;
+      color: var(--ink);
+    }
+    footer p{
+      color: var(--muted);
+      font-size:.82rem;
+      font-weight:500;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html">
+        <img src="../homeImg/01_kumoh_university_logo.png" alt="금오공과대학교">
+        <div class="brand-text">
+          <span class="brand-top">Kumoh National Institute of Technology</span>
+          <span class="brand-main">Service Design Lab</span>
+        </div>
+      </a>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="professor.html">Professor</a></li>
+          <li><a href="members.html">Members</a></li>
+          <li><a href="project.html" class="active">Project</a></li>
+          <li><a href="index.html#related">Related</a></li>
+        </ul>
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9z"/>
+          </svg>
+          Theme
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO + SLIDER (Recent Works) -->
+  <section class="section section--hero">
+    <div class="container">
+      <div class="titlebar reveal" style="justify-content:center; margin-bottom: 1rem;">
+        <div class="bar-left" style="align-items:center;">
+          <div class="bar-label">Recent Works</div>
+        </div>
+      </div>
+
+      <div class="hero-slider reveal">
+        <div class="slider-container">
+          <div class="slider-track" id="projectSlider">
+            <img src="../project/2025_cultural_youth_design_livinglab_1.jpg" alt="문화산단 청년디자인리빙랩">
+            <img src="../project/2025_k_design_award_1.jpg" alt="K DESIGN AWARD 심사">
+            <img src="../project/2025_asia_design_award_1.jpg" alt="ASIA DESIGN AWARD 심사">
+            <img src="../project/2025_gumi_women_forum_1.jpg" alt="구미 2030 여성 포럼">
+          </div>
+          <button class="slider-btn prev" onclick="moveSlide(-1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="slider-btn next" onclick="moveSlide(1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="slider-dots" id="sliderDots"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY GRID -->
+  <section class="section section--gallery">
+    <div class="container">
+      <div class="page-header reveal">
+        <h1 class="page-title">PROJECT</h1>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card reveal" data-project="0">
+          <div class="project-img"><img src="../project/2025_cultural_youth_design_livinglab_1.jpg" alt="문화산단 청년디자인리빙랩"></div>
+          <p class="project-title">문화산단 청년디자인리빙랩</p>
+        </div>
+        <div class="project-card reveal" data-project="1">
+          <div class="project-img"><img src="../project/2025_k_design_award_1.jpg" alt="K DESIGN AWARD 심사"></div>
+          <p class="project-title">2025.10 K DESIGN AWARD 심사</p>
+        </div>
+        <div class="project-card reveal" data-project="2">
+          <div class="project-img"><img src="../project/2025_asia_design_award_1.jpg" alt="ASIA DESIGN AWARD 심사"></div>
+          <p class="project-title">2025.03 ASIA DESIGN AWARD 심사</p>
+        </div>
+        <div class="project-card reveal" data-project="3">
+          <div class="project-img"><img src="../project/2025_gumi_women_forum_1.jpg" alt="구미 2030 여성 포럼"></div>
+          <p class="project-title">2025 구미 2030 여성 포럼</p>
+        </div>
+        <div class="project-card reveal" data-project="4">
+          <div class="project-img"><img src="../project/2024_metaverse_contest_1.png" alt="동북권 메타버스 창작자 경진대회"></div>
+          <p class="project-title">제 3회 동북권 메타버스 창작자 경진대회</p>
+        </div>
+        <div class="project-card reveal" data-project="5">
+          <div class="project-img"><img src="../project/2024_gumi_ramen_festival_1.jpg" alt="구미 라면 축제"></div>
+          <p class="project-title">2024 구미 라면 축제</p>
+        </div>
+        <div class="project-card reveal" data-project="6">
+          <div class="project-img"><img src="../project/2024_citizen_policy_design_1.png" alt="구미 시민정책디자인단"></div>
+          <p class="project-title">2024 구미 시민정책디자인단</p>
+        </div>
+        <div class="project-card reveal" data-project="7">
+          <div class="project-img"><img src="../project/2024_birthrate_workshop_1.png" alt="저출생 리서치 워크숍"></div>
+          <p class="project-title">2024 저출생 리서치 워크숍</p>
+        </div>
+        <div class="project-card reveal" data-project="8">
+          <div class="project-img"><img src="../project/2024_asia_design_award_1.png" alt="ASIA DESIGN PRIZE AWARD"></div>
+          <p class="project-title">2024 ASIA DESIGN PRIZE AWARD</p>
+        </div>
+        <div class="project-card reveal" data-project="9">
+          <div class="project-img"><img src="../project/2024_gwangju_biennale_1.png" alt="광주 디자인비엔날레"></div>
+          <p class="project-title">2024 광주 디자인비엔날레</p>
+        </div>
+        <div class="project-card reveal" data-project="10">
+          <div class="project-img"><img src="../project/2023_citizen_policy_design_1.png" alt="2023 구미 시민정책디자인단"></div>
+          <p class="project-title">2023 구미 시민정책디자인단</p>
+        </div>
+        <div class="project-card reveal" data-project="11">
+          <div class="project-img"><img src="../project/2022_hackathon_1.png" alt="산학 해커톤"></div>
+          <p class="project-title">2022 산학 해커톤</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT LIST -->
+  <section class="section section--list">
+    <div class="container">
+      <div class="project-list-container">
+        <p class="ongoing-label reveal" style="font-family:var(--font-display);font-size:.72rem;font-weight:700;color:var(--ink);letter-spacing:.5px;margin-bottom:.6rem;">Ongoing</p>
+        <ul class="project-list reveal" style="margin-bottom:2rem;border-bottom:2px solid var(--line);padding-bottom:1.2rem;">
+          <li>
+            <span class="project-list-title">문화산단 청년디자인리빙랩 자문/구미문화산단 연구원 참여</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2025~</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">ICT혁신인재4.0사업</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023~</span></span>
+          </li>
+        </ul>
+
+        <ul class="project-list reveal">
+          <li>
+            <span class="project-list-title">K DESIGN AWARD 심사</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2025.10</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">ASIA DESIGN AWARD 심사</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2025.03</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2025 구미 2030 여성 포럼 (구미시 인구 재구조화 대책 수립 연구용역)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2025.02~09</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">구미 인구 재구조화 대책 수립 연구</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2025.02~09</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2024구미 미래도시포럼 (구미시 소프트파워 강화를 위한 전략적 디자인활용 방안)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2024.08~10</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">동북권 메타버스 허브 구축운영사업</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2022.07~2024.12</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">메타버스 랩 (메에인: 햅틱과 AI기술을 활용한 가상인터뷰 프로젝트)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023.01~2024.12</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">GRAND ICT 연구센터 (지역지능화혁신인재양성사업)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2020.07~2024.12</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2024 구미 라면축제 스마트플레이 큐브존</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2024.08~11</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2024 구미 시민정책디자인단 (저출생 극복 정책의제 도출)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2024.08~10</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2023 구미 시민정책디자인단 (구미역 복합문화거점공간 'Ground 9'조성사업)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023.08~10</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2023 구미자원발굴단 (경북지역문제해결플랫폼)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023.07~10</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">디자인주도제조혁신사업 역량진단 컨설팅</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023~2024</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">동북권 메타버스 아카데미 (한국전파진흥협회)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2023 광주 디자인 비엔날레 (라이프스타일관 큐레이터)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023.01~10</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">물순환도시 안동 공(共)감(感)동(動) 프로젝트 시민 참여 워크숍 (K-WATER)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2023.05~07</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">구미IC 진입관문 상징조형물 조성을 위한 서비스디자인 리서치</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2022.10~12</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">구미지역 대학 연합 해커톤 '어린이 안전 메타버스'</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2022.05~11</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">명예옷장 (스승과 제자를 잇는 명예로운 가치 사회혁신 프로젝트)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2018~2020</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">근력보조 엑소수트 트렌드 및 동향 분석 보고서</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2019.11~12</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">투척용 소화기 기술의 접목을 통한 제품개발을 위한 서비스디자인리서치</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2019.02~04</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">감성 소비시장 대응형 소재·부품 사업화 지원사업</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2016.06~2018.05</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">구미시 아동친화놀이터 조성을 위한 디자인씽킹캠프 기획 및 실행</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2018.07~09</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">Active Aging을 위한 제품 컨셉 및 시나리오 발굴 용역</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2017.04~07</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">소재·부품 감성화 지원기술개발</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2015.04~2016.03</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">거치형 블루투스 스피커 디자인개발</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2015.11~2016.02</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">블루투스 스피커 디자인개발</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2015.04~08</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">백두대간 십승지 예술나라 조성</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2014.07~2015.01</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">자동차 내부 천장재 선행소재 디자인 개발</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2013.05~07</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">2013년도 광역권 디자인지원사업(구미 산업단지 내 중소기업을 위한 디자인)</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2013.11~12</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">디자인 소재은행 활성화 콘텐츠 제작에 따른 교육 및 워크숍 프로그램 가이드라인 구축</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2013.01~02</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">수요자 밀착형 디자인 전략 수립</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2013.05~06</span></span>
+          </li>
+          <li>
+            <span class="project-list-title">미세 입체 패턴을 적용한 감성 알루미늄 패널 기술 개발</span>
+            <span class="project-date"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>2013.07~09</span></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL MODAL -->
+  <div class="detail-modal" id="detailModal">
+    <div class="detail-modal-content">
+      <button class="detail-close" onclick="closeDetailModal()">×</button>
+      <div class="detail-image-container">
+        <button class="detail-nav prev" onclick="navigateDetail(-1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <img id="detailImage" src="" alt="">
+        <button class="detail-nav next" onclick="navigateDetail(1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="detail-info">
+        <div class="detail-counter" id="detailCounter">1 / 3</div>
+        <div class="detail-title" id="detailTitle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="../homeImg/01_kumoh_university_logo.png" alt="금오공과대학교">
+        <span>Service Design Lab</span>
+      </div>
+      <p>© 2026 국립금오공과대학교 서비스디자인연구실. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    const setScrolled = () => {
+      if (window.scrollY > 12) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', setScrolled);
+    window.addEventListener('load', setScrolled);
+
+    // Dark mode
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const applyTheme = (t) => {
+      document.body.setAttribute('data-theme', t);
+      if (t === 'dark') {
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"></path>';
+      } else {
+        themeIcon.innerHTML = '<path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9z"></path>';
+      }
+    };
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+    themeBtn.addEventListener('click', () => {
+      const curr = document.body.getAttribute('data-theme') || 'light';
+      const next = curr === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+
+    // Main Slider
+    let currentSlide = 0;
+    const sliderTrack = document.getElementById('projectSlider');
+    const totalSlides = sliderTrack.children.length;
+    const dotsContainer = document.getElementById('sliderDots');
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+    function moveSlide(dir) {
+      currentSlide = (currentSlide + dir + totalSlides) % totalSlides;
+      updateSlider();
+    }
+    function goToSlide(idx) {
+      currentSlide = idx;
+      updateSlider();
+    }
+    function updateSlider() {
+      sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dotsContainer.querySelectorAll('.slider-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === currentSlide);
+      });
+    }
+    setInterval(() => moveSlide(1), 5000);
+
+    // Project Detail Data
+    const projectData = [
+      { title: '문화산단 청년디자인리빙랩', basePath: '../project/2025_cultural_youth_design_livinglab_', extensions: ['jpg', 'JPG', 'JPG', 'JPG', 'jpg'] },
+      { title: '2025.10 K DESIGN AWARD 심사', basePath: '../project/2025_k_design_award_', extensions: ['jpg', 'jpg', 'jpg'] },
+      { title: '2025.03 ASIA DESIGN AWARD 심사', basePath: '../project/2025_asia_design_award_', extensions: ['jpg', 'jpg', 'jpg'] },
+      { title: '2025 구미 2030 여성 포럼', basePath: '../project/2025_gumi_women_forum_', extensions: ['jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg'] },
+      { title: '제 3회 동북권 메타버스 창작자 경진대회', basePath: '../project/2024_metaverse_contest_', extensions: ['png', 'jpg', 'jpg', 'jpg', 'jpg', 'png', 'jpg', 'png'] },
+      { title: '2024 구미 라면 축제', basePath: '../project/2024_gumi_ramen_festival_', extensions: ['jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'png', 'jpg', 'jpg', 'png', 'jpg', 'png', 'jpg', 'png'] },
+      { title: '2024 구미 시민정책디자인단', basePath: '../project/2024_citizen_policy_design_', extensions: ['png', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg'] },
+      { title: '2024 저출생 리서치 워크숍', basePath: '../project/2024_birthrate_workshop_', extensions: ['png', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png'] },
+      { title: '2024 ASIA DESIGN PRIZE AWARD', basePath: '../project/2024_asia_design_award_', extensions: ['png', 'png'] },
+      { title: '2024 광주 디자인비엔날레', basePath: '../project/2024_gwangju_biennale_', extensions: ['png', 'png', 'png', 'png'] },
+      { title: '2023 구미 시민정책디자인단', basePath: '../project/2023_citizen_policy_design_', extensions: ['png', 'png', 'png'] },
+      { title: '2022 산학 해커톤', basePath: '../project/2022_hackathon_', extensions: ['png', 'png', 'png', 'png', 'png', 'png', 'png'] }
+    ];
+    let currentProject = 0;
+    let currentDetailIndex = 0;
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const projectIndex = parseInt(this.dataset.project);
+        openDetailModal(projectIndex);
+      });
+    });
+    function openDetailModal(projectIndex) {
+      currentProject = projectIndex;
+      currentDetailIndex = 0;
+      updateDetailImage();
+      document.getElementById('detailModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    function navigateDetail(dir) {
+      const project = projectData[currentProject];
+      const count = project.extensions.length;
+      currentDetailIndex = (currentDetailIndex + dir + count) % count;
+      updateDetailImage();
+    }
+    function updateDetailImage() {
+      const project = projectData[currentProject];
+      const imgNum = currentDetailIndex + 1;
+      const ext = project.extensions[currentDetailIndex];
+      const imgSrc = `${project.basePath}${imgNum}.${ext}`;
+      document.getElementById('detailImage').src = imgSrc;
+      document.getElementById('detailCounter').textContent = `${imgNum} / ${project.extensions.length}`;
+      document.getElementById('detailTitle').textContent = project.title;
+    }
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+      if (e.target === this) closeDetailModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('detailModal').classList.contains('active')) return;
+      if (e.key === 'Escape') closeDetailModal();
+      if (e.key === 'ArrowLeft') navigateDetail(-1);
+      if (e.key === 'ArrowRight') navigateDetail(1);
+    });
+
+    // Scroll Reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('active');
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

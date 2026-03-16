@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Related | 서비스디자인연구실</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --font-display: "Unbounded", system-ui, sans-serif;
+      --font-body: "IBM Plex Sans KR", system-ui, sans-serif;
+
+      --a1: #ff4fbf;
+      --a2: #b7ff2a;
+      --a3: #2a5bff;
+      --a4: #00e5ff;
+
+      --bg: #fbfbff;
+      --panel: rgba(255,255,255,.78);
+      --panel-2: rgba(255,255,255,.62);
+      --ink: #0b0a12;
+      --text: rgba(11,10,18,.88);
+      --muted: rgba(11,10,18,.58);
+      --line: rgba(11,10,18,.10);
+      --shadow-sm: 0 10px 24px rgba(10,10,22,.08);
+      --shadow-md: 0 18px 55px rgba(10,10,22,.12);
+      --shadow-lg: 0 35px 95px rgba(10,10,22,.16);
+
+      --r-xl: 30px;
+      --r-lg: 22px;
+      --r-md: 16px;
+
+      --container: 1220px;
+      --pad-x: clamp(1.1rem, 4vw, 3.2rem);
+    }
+
+    body[data-theme="dark"]{
+      --bg: #070713;
+      --panel: rgba(18,18,30,.70);
+      --panel-2: rgba(18,18,30,.52);
+      --ink: #f4f4ff;
+      --text: rgba(244,244,255,.90);
+      --muted: rgba(244,244,255,.60);
+      --line: rgba(244,244,255,.12);
+      --shadow-sm: 0 10px 30px rgba(0,0,0,.35);
+      --shadow-md: 0 18px 70px rgba(0,0,0,.45);
+      --shadow-lg: 0 40px 110px rgba(0,0,0,.55);
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a{ color:inherit; }
+    img{ display:block; }
+    ::selection{ background: rgba(255,79,191,.22); }
+
+    .container{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 2)));
+      margin:0 auto;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:1000;
+      padding: 14px var(--pad-x);
+      background: transparent;
+      transition: background .22s ease, border-color .22s ease;
+    }
+    nav.scrolled{
+      background: color-mix(in oklab, var(--panel) 78%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 0)));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+    }
+    .nav-brand{
+      display:flex;
+      align-items:center;
+      gap:.85rem;
+      text-decoration:none;
+      min-width: 240px;
+    }
+    .nav-brand img{ height: 28px; width:auto; }
+    .brand-text{ display:flex; flex-direction:column; line-height:1.1; }
+    .brand-top{
+      font-size:.72rem;
+      color: var(--muted);
+      font-weight:600;
+      letter-spacing:.2px;
+    }
+    .brand-main{
+      font-family: var(--font-display);
+      font-size:.92rem;
+      font-weight:700;
+      letter-spacing:-0.6px;
+      color: var(--ink);
+    }
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap: 1.1rem;
+    }
+    .nav-links{
+      list-style:none;
+      display:flex;
+      gap: 1.4rem;
+      align-items:center;
+    }
+    .nav-links a{
+      text-decoration:none;
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.82rem;
+      letter-spacing:-0.4px;
+      color: color-mix(in oklab, var(--ink) 70%, transparent);
+      position:relative;
+      padding: .35rem 0;
+      transition: color .2s ease;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:-2px;
+      width:0%;
+      height:2px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      transition: width .25s ease;
+    }
+    .nav-links a:hover{ color: var(--ink); }
+    .nav-links a:hover::after{ width:100%; }
+    .nav-links a.active{ color: var(--ink); }
+    .nav-links a.active::after{ width:100%; }
+    .theme-btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding: .55rem .85rem;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.78rem;
+      letter-spacing:-0.35px;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      user-select:none;
+    }
+    .theme-btn:hover{
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: color-mix(in oklab, var(--a1) 28%, var(--line));
+    }
+    .theme-btn svg{ width:18px; height:18px; }
+    @media (max-width: 860px){
+      .nav-links{ display:none; }
+    }
+
+    /* SECTION */
+    .section{
+      padding: clamp(4.6rem, 8vw, 7.2rem) 0;
+      position:relative;
+      isolation:isolate;
+    }
+
+    .section--hero{
+      padding-top: 112px;
+      padding-bottom: clamp(2rem, 4vw, 3rem);
+      background:
+        radial-gradient(1200px 700px at 78% -10%, color-mix(in oklab, var(--a1) 28%, transparent), transparent 60%),
+        radial-gradient(1000px 650px at 10% 20%, color-mix(in oklab, var(--a3) 18%, transparent), transparent 60%),
+        radial-gradient(900px 650px at 88% 75%, color-mix(in oklab, var(--a2) 14%, transparent), transparent 55%);
+    }
+
+    .section--resources{
+      background:
+        linear-gradient(180deg,
+          color-mix(in oklab, var(--panel) 40%, transparent),
+          transparent 60%),
+        radial-gradient(900px 500px at 12% 20%, color-mix(in oklab, var(--a4) 10%, transparent), transparent 60%);
+      border-top: 1px solid var(--line);
+    }
+
+    .section--portfolio{
+      background:
+        radial-gradient(1000px 650px at 90% 20%, color-mix(in oklab, var(--a3) 14%, transparent), transparent 60%),
+        radial-gradient(900px 600px at 10% 75%, color-mix(in oklab, var(--a1) 12%, transparent), transparent 60%);
+      border-top: 1px solid var(--line);
+    }
+
+    .section--awards{
+      background:
+        radial-gradient(900px 500px at 50% 20%, color-mix(in oklab, var(--a2) 12%, transparent), transparent 60%),
+        radial-gradient(800px 500px at 20% 80%, color-mix(in oklab, var(--a1) 10%, transparent), transparent 60%);
+      border-top: 1px solid var(--line);
+    }
+
+    /* TITLE BAR */
+    .titlebar{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 1rem;
+      margin-bottom: clamp(1.6rem, 3.2vw, 2.8rem);
+    }
+    .bar-left{
+      display:flex;
+      flex-direction:column;
+      gap: .5rem;
+      align-items:center;
+    }
+    .bar-label{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      font-family: var(--font-display);
+      font-weight:800;
+      font-size:.78rem;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .bar-label::before{
+      content:"";
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: conic-gradient(from 220deg, var(--a1), var(--a2), var(--a3), var(--a1));
+      box-shadow: 0 0 0 5px color-mix(in oklab, var(--a1) 12%, transparent);
+    }
+    .bar-title{
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: -1.4px;
+      line-height: 1.05;
+      color: var(--ink);
+      font-size: clamp(2rem, 3.8vw, 3rem);
+    }
+    .bar-title .kr{
+      display:inline-block;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* CATEGORY HEADER */
+    .category-header{
+      display:flex;
+      align-items:center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .category-icon{
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .category-icon--resource{
+      background: linear-gradient(135deg,
+        color-mix(in oklab, var(--a1) 20%, transparent),
+        color-mix(in oklab, var(--a2) 15%, transparent));
+    }
+    .category-icon--portfolio{
+      background: linear-gradient(135deg,
+        color-mix(in oklab, var(--a3) 20%, transparent),
+        color-mix(in oklab, var(--a4) 15%, transparent));
+    }
+    .category-icon--award{
+      background: linear-gradient(135deg,
+        color-mix(in oklab, var(--a2) 20%, transparent),
+        color-mix(in oklab, var(--a1) 15%, transparent));
+    }
+    .category-icon svg{
+      width: 24px;
+      height: 24px;
+      stroke: var(--ink);
+      fill: none;
+    }
+    .category-title{
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 1px;
+    }
+
+    /* LINKS GRID */
+    .links-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .link-card{
+      border-radius: var(--r-xl);
+      overflow:hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-md);
+      cursor:pointer;
+      text-decoration:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 2rem 1.5rem;
+      min-height: 110px;
+      position:relative;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .link-card::before{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0;
+      height:4px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity:0;
+      transition: opacity .3s ease;
+    }
+    .link-card:hover{
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: color-mix(in oklab, var(--a1) 28%, var(--line));
+    }
+    .link-card:hover::before{
+      opacity:1;
+    }
+    .link-card.no-link{
+      cursor:default;
+      opacity:.5;
+    }
+    .link-card.no-link:hover{
+      transform:none;
+      box-shadow: var(--shadow-md);
+      border-color: var(--line);
+    }
+    .link-card.no-link:hover::before{
+      opacity:0;
+    }
+    .link-card img{
+      max-width: 150px;
+      max-height: 48px;
+      object-fit:contain;
+      transition: transform .3s ease;
+    }
+    .link-card:hover img{
+      transform: scale(1.08);
+    }
+    .link-card.no-link:hover img{
+      transform:none;
+    }
+
+    @media (max-width: 900px){
+      .links-grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px){
+      .links-grid{ grid-template-columns: 1fr; max-width: 350px; margin: 0 auto; }
+      .link-card{ padding: 1.6rem 1.2rem; min-height: 95px; }
+      .category-icon{ width:42px; height:42px; }
+      .category-title{ font-size: .95rem; }
+    }
+
+    /* REVEAL */
+    .reveal{
+      opacity:0;
+      transform: translateY(16px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.active{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* FOOTER */
+    footer{
+      padding: 1.8rem var(--pad-x);
+      border-top: 1px solid var(--line);
+      background: color-mix(in oklab, var(--panel) 70%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .footer-inner{
+      width:min(var(--container), calc(100% - (var(--pad-x) * 2)));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+      flex-wrap:wrap;
+    }
+    .footer-brand{
+      display:flex;
+      align-items:center;
+      gap:.75rem;
+    }
+    .footer-brand img{ height: 22px; width:auto; }
+    .footer-brand span{
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:.92rem;
+      letter-spacing:-0.6px;
+      color: var(--ink);
+    }
+    footer p{
+      color: var(--muted);
+      font-size:.82rem;
+      font-weight:500;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html">
+        <img src="../homeImg/01_kumoh_university_logo.png" alt="금오공과대학교">
+        <div class="brand-text">
+          <span class="brand-top">Kumoh National Institute of Technology</span>
+          <span class="brand-main">Service Design Lab</span>
+        </div>
+      </a>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="professor.html">Professor</a></li>
+          <li><a href="members.html">Members</a></li>
+          <li><a href="project.html">Project</a></li>
+          <li><a href="related.html" class="active">Related</a></li>
+        </ul>
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9z"/>
+          </svg>
+          Theme
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="section section--hero">
+    <div class="container">
+      <div class="titlebar reveal">
+        <div class="bar-left">
+          <div class="bar-title"><span class="kr" style="background:none;-webkit-background-clip:unset;background-clip:unset;color:var(--ink);-webkit-text-fill-color:var(--ink);">RELATED</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGN RESOURCES -->
+  <section class="section section--resources">
+    <div class="container">
+      <div class="category-header reveal">
+        <div class="category-icon category-icon--resource">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <h3 class="category-title">DESIGN RESOURCES</h3>
+      </div>
+
+      <div class="links-grid">
+        <a href="https://www.kidp.or.kr/?menuno=773" target="_blank" class="link-card reveal">
+          <img src="../related/1_kidp.png" alt="KIDP 한국디자인진흥원">
+        </a>
+        <a href="https://www.wedesignx.com/" target="_blank" class="link-card reveal">
+          <img src="../related/2_wedesignx.png" alt="WeDesignX">
+        </a>
+        <a href="https://www.designdb.com/?menuno=668#gsc.tab=0" target="_blank" class="link-card reveal">
+          <img src="../related/3_designdb.png" alt="designdb">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATIVE SPACE -->
+  <section class="section section--portfolio">
+    <div class="container">
+      <div class="category-header reveal">
+        <div class="category-icon category-icon--portfolio">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <h3 class="category-title">CREATIVE SPACE</h3>
+      </div>
+
+      <div class="links-grid">
+        <a href="https://www.behance.net/" target="_blank" class="link-card reveal">
+          <img src="../related/5_behance.png" alt="Behance">
+        </a>
+        <a href="https://brunch.co.kr/" target="_blank" class="link-card reveal">
+          <img src="../related/6_brunch.png" alt="brunch story">
+        </a>
+        <a href="https://www.designsori.com/" target="_blank" class="link-card reveal">
+          <img src="../related/7_designsori.png" alt="DESIGNSORI">
+        </a>
+        <div class="link-card no-link reveal">
+          <img src="../related/4_cheese.png" alt="Minimal Design, Maximum Impact">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGN AWARDS -->
+  <section class="section section--awards">
+    <div class="container">
+      <div class="category-header reveal">
+        <div class="category-icon category-icon--award">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="7"/>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+          </svg>
+        </div>
+        <h3 class="category-title">DESIGN AWARDS</h3>
+      </div>
+
+      <div class="links-grid">
+        <a href="https://asiadesignprize.com/" target="_blank" class="link-card reveal">
+          <img src="../related/8_adp.png" alt="Asia Design Prize">
+        </a>
+        <a href="https://kdesignaward.com/" target="_blank" class="link-card reveal">
+          <img src="../related/9_kda.png" alt="K Design Award">
+        </a>
+        <a href="https://ifdesign.com/en/" target="_blank" class="link-card reveal">
+          <img src="../related/10_designaward.png" alt="iF Design Award">
+        </a>
+        <a href="https://www.red-dot.org/ko/" target="_blank" class="link-card reveal">
+          <img src="../related/11_reddot.png" alt="reddot design award">
+        </a>
+        <a href="https://idea.secure-platform.com/a/" target="_blank" class="link-card reveal">
+          <img src="../related/12_idea.png" alt="International Design Excellence Awards">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="../homeImg/01_kumoh_university_logo.png" alt="금오공과대학교">
+        <span>Service Design Lab</span>
+      </div>
+      <p>© 2026 국립금오공과대학교 서비스디자인연구실. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    const setScrolled = () => {
+      if (window.scrollY > 12) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', setScrolled);
+    window.addEventListener('load', setScrolled);
+
+    // Dark mode
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const applyTheme = (t) => {
+      document.body.setAttribute('data-theme', t);
+      if (t === 'dark') {
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"></path>';
+      } else {
+        themeIcon.innerHTML = '<path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9z"></path>';
+      }
+    };
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+    themeBtn.addEventListener('click', () => {
+      const curr = document.body.getAttribute('data-theme') || 'light';
+      const next = curr === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+
+    // Scroll Reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('active');
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
